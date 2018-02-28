@@ -2,7 +2,7 @@
 % em estado de interferência
 
 % P(N) = p(1,2,3,4)
-% P(I) = 100 - p(1,2,3,4)
+% P(I) = 1 - p(1,2,3,4)
 
 % numero de frames que se analisam para verificar se há erros ou nao
 n1 = 2;
