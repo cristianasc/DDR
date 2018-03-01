@@ -5,15 +5,15 @@
 errors_normal_state = 0.01/100; % P(E/N)
 errors_interference_state = 50/100; % P(E/I)
 
-pN_n1 = errors_normal_state^2;  % P(E/N)
-pN_n2 = errors_normal_state^3;  % P(E/N)
-pN_n3 = errors_normal_state^4;  % P(E/N)
-pN_n4 = errors_normal_state^5;  % P(E/N)
+pN_n1 = 1 - errors_normal_state^2;  % P(E/N)
+pN_n2 = 1 - errors_normal_state^3;  % P(E/N)
+pN_n3 = 1 - errors_normal_state^4;  % P(E/N)
+pN_n4 = 1 - errors_normal_state^5;  % P(E/N)
 
-pI_n1 = errors_interference_state^2;  % P(E/I)
-pI_n2 = errors_interference_state^3;  % P(E/I)
-pI_n3 = errors_interference_state^4;  % P(E/I)
-pI_n4 = errors_interference_state^5;  % P(E/I)
+pI_n1 = 1 - errors_interference_state^2;  % P(E/I)
+pI_n2 = 1 - errors_interference_state^3;  % P(E/I)
+pI_n3 = 1 - errors_interference_state^4;  % P(E/I)
+pI_n4 = 1 - errors_interference_state^5;  % P(E/I)
 
 
 % P(E) => probabilidade de serem recebidas frames com erros
@@ -25,9 +25,10 @@ p2 = 0.999;
 p3 = 0.9999;
 p4 = 0.99999;
 
+
 % P1
 % para n = 2
-p1E2_N = vpa((pI_n1*(1-p1))/(pN_n1*p1 + pI_n1*(1-p1)))
+p1E2_N = (pI_n1*(1-p1))/(pN_n1*p1 + pI_n1*(1-p1))
 
 % para n = 3
 p1E3_N = (pI_n2*(1-p1))/((pN_n2*p1) + pI_n2*(1-p1))
