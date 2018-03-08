@@ -10,7 +10,7 @@ nAP = size(AP,1);    %Number of APs
 S= S/3.6;            % Conversion of maximum speed to m/s
 results= zeros(1,T); % Initialization of the results array
 
-plotar = 0;  % if plotar = 1, node movement is visualized
+plotar = 1;  % if plotar = 1, node movement is visualized
              % if plotar = 2, node movement and connectivity are visualized
 
 % Generation of initial coordinates of each mobile node position and speed:
@@ -60,17 +60,17 @@ pos = pos + delta * vel;
 pos_x=pos(:,1);  %vamos buscar os valors da primeira coluna
 pos_y=pos(:,2);  %vamos buscar os valores da segunda coluna
 
-%devemos manter os valores dentro dos limites indicados
-pos_x(pos_x<0)=0; 
-pos_x(pos_x>300)=300;
-pos_y(pos_y<0)=0;
-pos_y(pos_y>200)=200;
-
 %mudar o sinal das velocidades cuja as posições saíam fora dos limites
 vel_x=vel(:,1);
 vel_y=vel(:,2);
 vel_x(pos_x<0 | pos_x>300)=-vel_x(pos_x<0 | pos_x>300);
 vel_y(pos_y<0 | pos_y>200)=-vel_y(pos_y<0 | pos_y>200);
+
+%devemos manter os valores dentro dos limites indicados
+pos_x(pos_x<0)=0; 
+pos_x(pos_x>300)=300;
+pos_y(pos_y<0)=0;
+pos_y(pos_y>200)=200;
 
 %atualizar a matriz com os valores corretos
 pos(:,1)=pos_x;
