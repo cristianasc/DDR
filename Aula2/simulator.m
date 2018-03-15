@@ -3,7 +3,7 @@ N= 30;       % Number of mobile nodes
 W= 60;       % Radio range (in meters)
 S= 6;        % Maximum speed (in Km/h)
 delta= 1;    % Difference between consecutive time instants (in seconds)
-T= 360;     % No. of time instants of the simulation
+T= 3600;     % No. of time instants of the simulation
 AP = [75 100;225 100];   % Coordinates of each AP
 
 nAP = size(AP,1);    %Number of APs
@@ -24,7 +24,7 @@ for iter= 1:T
     % Compute the node pairs with direct wireless links:
     L= ConnectedList(N,pos,W,AP);
     % Compute the percentage number of connected node pairs:
-    %results(iter)= AverageConnectedNodePairs(N,L);
+    results(iter)= AverageConnectedNodePairs(N,L,nAP);
     % Visualization of the simulation:
     if plotar>0
         visualize(pos,AP,L,plotar)
@@ -90,36 +90,45 @@ function L= ConnectedList(N,pos,W,AP)
     for i=1:N
         for j=i+1:N+nAPs
             if ((pos(j,1)-pos(i,1))^2 + (pos(j,2)-pos(i,2))^2) < W
-                L=[L;i j];
+                L=[L; i j];
+            end
+        end
+    end    
+end
+
+function o= AverageConnectedNodePairs(N,L,nAP)
+%Computes a value �o� with the percentage number of connected node pairs based on the input matrix �L� of node pairs with direct links (see Section 4).
+
+    repeat = 1;
+    
+    labels_nodes = zeros(N+nAP,1); %tudo com zeros
+    
+    for i=1:nAP
+        labels_nodes(N+i,1) = 1; %colocar os APs com uns
+    end
+    
+    while repeat == 1
+        repeat = 0;
+        for i=1:size(L,1) %percorrer todos os pares de nós     
+            if(labels_nodes(L(i,1)) ~= labels_nodes(L(i,2)))
+                %verificar se as posições estão a 0, se estiverem, alterar
+                %para 1, APS têm semplre o valor 1
+                if labels_nodes(L(i,1)) == 0 
+                    labels_nodes(L(i,1)) = 1;
+                else
+                    labels_nodes(L(i,2)) = 1;
+                end
+                %repeat fica igual a 1
+                repeat = 1;
             end
         end
     end
     
-    size(L)
+    %verificar quantos valores estão a 1 
+    count = sum(labels_nodes(1:N));
+    %fazer o calculo do O
+    o = (count/N)*100;
     
-    % NOT COMPLETED
-    
-end
-
-function o= AverageConnectedNodePairs(N,L)
-%Computes a value �o� with the percentage number of connected node pairs based on the input matrix �L� of node pairs with direct links (see Section 4).
-
-    %repeat = 1;
-    
-    %labels_nodes = zeros(N,1);
-    %nodes = [pos, labels_nodes]
-    
-    %labels_aps = zeros(AP,1);
-    %aps = [pos, labels_aps]
-    
-    %while repeat == 1
-    %    repeat = 0;
-    %    for i = 0:N
-    %        for j=i:N-1+nAPs
-                
-    %        end
-    %    end
-    %end
 end
 
 function visualize(pos,AP,L,plotar)
@@ -129,6 +138,7 @@ function visualize(pos,AP,L,plotar)
     hold on
     plot(AP(1:nAP,1),AP(1:nAP,2),'s','MarkerEdgeColor','r','MarkerFaceColor','r','MarkerSize',10)
     if plotar==2
+        pos=[pos;AP];
         for i=1:size(L,1)
             plot([pos(L(i,1),1) pos(L(i,2),1)],[pos(L(i,1),2) pos(L(i,2),2)])
         end
