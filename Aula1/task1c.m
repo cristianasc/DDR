@@ -31,5 +31,6 @@ f4 = ((1-q).^((datafield4+40)*8))*datarate4;
 
 semilogx(q,f1,q,f2,q,f3,q,f4)
 grid on
-xlabel('Data Field (Bytes)')
+xlabel('Bit Error Rate')
 ylabel('Data Rate (Seconds)')
+legend('B=100', 'B=200', 'B=1000', 'B=8000')

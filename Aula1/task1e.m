@@ -20,6 +20,6 @@ res = sum(aux);
 
 semilogx(q,res,'k')
 grid on
-xlabel('Data Field (Bytes)')
+xlabel('Bit Error Rate')
 ylabel('Data Rate (Seconds)')
 

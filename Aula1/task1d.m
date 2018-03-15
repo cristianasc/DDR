@@ -22,5 +22,5 @@ total = 0.3*f1 + 0.7*f2;
 
 semilogx(q,total)
 grid on
-xlabel('Data Field (Bytes)')
+xlabel('Bit Error Rate')
 ylabel('Data Rate (Seconds)')
