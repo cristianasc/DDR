@@ -14,14 +14,15 @@ fprintf('resultado = %.2e +- %.2e\n',vpa(media),vpa(termo))
 function [FinalResult] = sim()
 
     %Parameters initialization:
-    N= 50;       % Number of mobile nodes
-    W= 40;       % Radio range (in meters)
-    S= 3;        % Maximum speed (in Km/h)
+    N= 100;       % Number of mobile nodes
+    W= 60;       % Radio range (in meters)
+    S= 6;        % Maximum speed (in Km/h)
     delta= 1;    % Difference between consecutive time instants (in seconds)
     T= 3600;     % No. of time instants of the simulation
     %AP = [75 100;225 100];   % Coordinates of each AP
-    AP = [150 100];
+    %AP = [150 100];
     %AP = [50 100;150 100; 250 100];
+    AP = [75 50; 75 150; 225 50; 225 150];
 
     nAP = size(AP,1);    %Number of APs
     S= S/3.6;            % Conversion of maximum speed to m/s
