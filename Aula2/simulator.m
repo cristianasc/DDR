@@ -1,44 +1,63 @@
-%Parameters initialization:
-N= 30;       % Number of mobile nodes
-W= 60;       % Radio range (in meters)
-S= 6;        % Maximum speed (in Km/h)
-delta= 1;    % Difference between consecutive time instants (in seconds)
-T= 3600;     % No. of time instants of the simulation
-AP = [75 100;225 100];   % Coordinates of each AP
 
-nAP = size(AP,1);    %Number of APs
-S= S/3.6;            % Conversion of maximum speed to m/s
-results= zeros(1,T); % Initialization of the results array
+N = 10; %número de simulações
+results= zeros(1,N); %vetor com os N resultados de simulação
 
-plotar = 2;  % if plotar = 1, node movement is visualized
-             % if plotar = 2, node movement and connectivity are visualized
-
-% Generation of initial coordinates of each mobile node position and speed:
-[pos,vel]= InitialRandom(N,S);
-h= waitbar(0,'Running simulation...');
-% Simulation cycle:
-for iter= 1:T
-    waitbar(iter/T,h);
-    % Update coordinates of each mobile node position and speed:
-    [pos,vel]= UpdateCoordinates(pos,vel,delta);
-    % Compute the node pairs with direct wireless links:
-    L= ConnectedList(N,pos,W,AP);
-    % Compute the percentage number of connected node pairs:
-    results(iter)= AverageConnectedNodePairs(N,L,nAP);
-    % Visualization of the simulation:
-    if plotar>0
-        visualize(pos,AP,L,plotar)
-    end
+for it= 1:N
+    results(it) = sim;
 end
-delete(h)
-% Plot the simulation results:
-figure(1)
-plot(1:T,results)
-axis([0 T 0 110])
-xlabel('Time (seconds)');
-ylabel('No. of connected nodes (%)')
-% Compute the final result: 
-FinalResult= mean(results)
+
+alfa= 0.1; %intervalo de confiança a 90%
+media = mean(results);
+termo = norminv(1-alfa/2)*sqrt(var(results)/N);
+fprintf('resultado = %.2e +- %.2e\n',vpa(media),vpa(termo))
+
+function [FinalResult] = sim()
+
+    %Parameters initialization:
+    N= 50;       % Number of mobile nodes
+    W= 40;       % Radio range (in meters)
+    S= 3;        % Maximum speed (in Km/h)
+    delta= 1;    % Difference between consecutive time instants (in seconds)
+    T= 3600;     % No. of time instants of the simulation
+    %AP = [75 100;225 100];   % Coordinates of each AP
+    AP = [150 100];
+    %AP = [50 100;150 100; 250 100];
+
+    nAP = size(AP,1);    %Number of APs
+    S= S/3.6;            % Conversion of maximum speed to m/s
+    results= zeros(1,T); % Initialization of the results array
+    plotar = 0;  % if plotar = 1, node movement is visualized
+                 % if plotar = 2, node movement and connectivity are visualized
+
+    % Generation of initial coordinates of each mobile node position and speed:
+    [pos,vel]= InitialRandom(N,S);
+    h= waitbar(0,'Running simulation...');
+    % Simulation cycle:
+    for iter= 1:T
+        waitbar(iter/T,h);
+        % Update coordinates of each mobile node position and speed:
+        [pos,vel]= UpdateCoordinates(pos,vel,delta);
+        % Compute the node pairs with direct wireless links:
+        L= ConnectedList(N,pos,W,AP);
+        % Compute the percentage number of connected node pairs:
+        results(iter)= AverageConnectedNodePairs(N,L,nAP);
+        % Visualization of the simulation:
+        if plotar>0
+            visualize(pos,AP,L,plotar)
+        end
+    end
+    delete(h)
+    % Plot the simulation results:
+    %figure(1)
+    %plot(1:T,results)
+    %axis([0 T 0 110])
+    %xlabel('Time (seconds)');
+    %ylabel('No. of connected nodes (%)')
+    % Compute the final result: 
+    FinalResult= mean(results);
+
+end
+
 
 function [pos,vel]= InitialRandom(N,S)
     %Computes a matrix �pos� of N rows and 2 columns with the coordinates of nodes (see Section 3.1) and a matrix �vel� of N rows and 2 columns with the initial horizontal and vertical components of the speed vector of each mobile node (see Section 3.2).
