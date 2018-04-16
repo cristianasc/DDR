@@ -71,3 +71,71 @@ function [b o]= simulator1(lambda,C,M,R)
     b= 100*BLOCKED/NARRIVALS; % blocking probability in %   
     o= LOAD/Clock; % average connection occupation in Mbps
 end
+
+function [bhd b4k]= simulator2(lambda,P,S,W,MHD,M4K,R)
+    %lambda = request arrival rate (in requests per hour)
+    %P = percentage of requests for 4K movies (in %)
+    %S = number of servers (each server with a capacity of 100 Mbps)
+    %W = resource reservation for high-definition movies (in Mbps)
+    %MHD = throughput of movies in HD format (4 Mbps)
+    %M4K = throughput of movies in 4K format (10 Mbps)
+    %R= stop simulation on ARRIVAL no. R
+    
+    invlambda=60/lambda; %average time between requests (in minutes) 
+    invmiu= load('movies.txt'); %duration (in minutes) of each movie 
+    Nmovies= length(invmiu); % number of movies
+    
+    %Events definition:
+    %movie request
+    ARRIVAL_HD= 0; 
+    ARRIVAL_4K = 0;
+    
+    %termination of a movie transmission
+    DEPARTURE_4K = ones(1,S);
+    DEPARTURE_HD = ones(1,S); 
+    
+    %State variables initialization:
+    STATE = zeros(1,S); %total throughput of the movies in transmission by server i (i = 1,...,S)
+    STATE_HD = 0; %total throughput of HD movies in transmission
+    
+    %Statistical counters initialization:
+    LOAD= 0;
+    NARRIVALS = 0;
+    NARRIVALS_HD = 0;
+    NARRIVALS_4K = 0;
+    BLOCKED_HD = 0;
+    BLOCKED_4K = 0;
+    
+    %Simulation Clock and initial List of Events:
+    Clock= 0;
+    EventList= [ARRIVAL_HD exprnd(invlambda), ARRIVAL_4K exprnd(invlambda)];
+    while NARRIVALS < R
+        event= EventList(1,1);
+        Previous_Clock= Clock;
+        Clock= EventList(1,2);
+        EventList(1,:)= [];
+        LOAD= LOAD + STATE*(Clock-Previous_Clock); % is this still needed?
+        if event == ARRIVAL_HD || event == ARRIVAL_4K
+            % must choose the server with less load
+            loadbalancer = find(STATE==min(STATE));
+            server = loadbalancer(1);
+            NARRIVALS= NARRIVALS+1;
+            
+            %verify if it's 4k
+            
+            %then if it's HD
+            
+            if STATE + M <= C
+                STATE= STATE+M;
+                EventList= [EventList; DEPARTURE Clock+invmiu(randi(Nmovies))];
+            else
+                BLOCKED= BLOCKED+1;
+            end
+        else
+            STATE= STATE-M;
+        end
+        EventList= sortrows(EventList,2);
+    end
+    bhd= 100*BLOCKED_HD/NARRIVALS; % blocking probability in %   
+    b4k= 100*BLOCKED_4K/NARRIVALS; % blocking probability in %
+end
