@@ -2,29 +2,53 @@
 %os valores teoricos (os da tabela da alinea a) devem estar dentro do valor
 %resultado do simulados ± o intervalo de confiança
 
-N = 10; %número de simulações
+N = 40; %número de simulações
 results= zeros(1,N); %vetor com os N resultados de simulação
 results2 = zeros(1,N);
-lambda = [10 20 30 40 10 20 30 40 100 200 300 400 100 200 300 400];
+% lambda = [10 20 30 40 10 20 30 40 100 200 300 400 100 200 300 400];
+lambda = [10 10 10 10 10 10 30 30 30 30 30 30];
 C =  [100 100 100 100 100 100 100 100 1000 1000 1000 1000 1000 1000 1000 1000];
 M = [4 4 4 4 10 10 10 10 4 4 4 4 10 10 10 10];
 R=5000;
+P = [0.2 0.2 0.2 0.4 0.4 0.4 0.2 0.2 0.2 0.4 0.4 0.4];
+W = [0 30 60 0 30 60 0 120 180 0 120 180];
+S = [1 1 1 1 1 1 3 3 3 3 3 3];
+MHD = 4
+M4K = 10
+
+% for i = 1:16
+%     for it= 1:N
+%         [results(it), results2(it)] = simulator1(lambda(i),C(i),M(i),R);
+%     end
+%     confidence_interval90(results, N, "b", i);
+%     confidence_interval90(results2, N, "o", i);
+% end
+% 
+% function [termo] = confidence_interval90(results, N, type, i)
+%     alfa= 0.1; %intervalo de confiança a 90%
+%     media = mean(results);
+%     termo = norminv(1-alfa/2)*sqrt(var(results)/N);
+%     fprintf('resultado %s%d = %.2e +- %.2e\n', type, i, vpa(media),vpa(termo))
+% end
 
 
-for i = 1:16
+
+for i = 1:12
     for it= 1:N
-        [results(it), results2(it)] = simulator1(lambda(i),C(i),M(i),R);
+        [results(it), results2(it)] = simulator2(lambda(i),P(i),S(i),W(i),MHD,M4K,R);
     end
     confidence_interval90(results, N, "b", i);
     confidence_interval90(results2, N, "o", i);
 end
-
+ 
 function [termo] = confidence_interval90(results, N, type, i)
     alfa= 0.1; %intervalo de confiança a 90%
     media = mean(results);
     termo = norminv(1-alfa/2)*sqrt(var(results)/N);
     fprintf('resultado %s%d = %.2e +- %.2e\n', type, i, vpa(media),vpa(termo))
 end
+
+
 
 function [b o]= simulator1(lambda,C,M,R)
     %lambda = request arrival rate (in requests per hour) %C= Internet connection capacity (in Mbps)
@@ -48,7 +72,7 @@ function [b o]= simulator1(lambda,C,M,R)
     %Simulation Clock and initial List of Events:
     Clock= 0;
     EventList= [ARRIVAL exprnd(invlambda)];
-    while NARRIVALS < R
+    while NARRIVALS < R + N
         event= EventList(1,1);
         Previous_Clock= Clock;
         Clock= EventList(1,2);
@@ -80,6 +104,9 @@ function [bhd b4k]= simulator2(lambda,P,S,W,MHD,M4K,R)
     %MHD = throughput of movies in HD format (4 Mbps)
     %M4K = throughput of movies in 4K format (10 Mbps)
     %R= stop simulation on ARRIVAL no. R
+    
+    N_C=100; %node capacity
+    C = S * N_C;
     
     invlambda=60/lambda; %average time between requests (in minutes) 
     invmiu= load('movies.txt'); %duration (in minutes) of each movie 
@@ -121,18 +148,47 @@ function [bhd b4k]= simulator2(lambda,P,S,W,MHD,M4K,R)
             server = loadbalancer(1);
             NARRIVALS= NARRIVALS+1;
             
+            
             %verify if it's 4k
             
             %then if it's HD
+            if event == ARRIVAL_HD
+                EventList= [EventList; ARRIVAL_HD Clock+exprnd(invlambda) 0];
+                NARRIVALS_HD = NARRIVALS_HD + 1;
             
-            if STATE + M <= C
-                STATE= STATE+M;
-                EventList= [EventList; DEPARTURE Clock+invmiu(randi(Nmovies))];
+                if STATE(loadbalancer) + MHD <= N_C && STATE_HD + MHD<= (C - W)
+
+                    STATE(loadbalancer) = STATE(loadbalancer) + MHD;
+                    STATE_HD = STATE_HD + MHD;
+                    EventList= [EventList; DEPARTURE_HD Clock+invmiu(randi(Nmovies)) loadbalancer];                
+                else
+                    BLOCKED_HD = BLOCKED_HD + 1;
+                end
+            else
+                
+                EventList= [EventList; ARRIVAL_AK Clock+exprnd(invlambda) 0];
+                NARRIVALS_4K = NARRIVALS_4K + 1;
+            
+                % servidor tem que ter pelo menos banda Mh disponivel
+                if STATE(loadbalancer) + M4K <= N_C
+
+                    STATE(loadbalancer) = STATE(loadbalancer) + M4K;
+                    EventList= [EventList; DEPARTURE_4K Clock+invmiu(randi(Nmovies)) loadbalancer];
+
+                else
+                    BLOCKED_4K = BLCKED_4K + 1;
+                end
+                
+            end
+            
+            if STATE + W <= C
+                STATE= STATE+W;
+                
             else
                 BLOCKED= BLOCKED+1;
             end
         else
-            STATE= STATE-M;
+            STATE= STATE-W;
         end
         EventList= sortrows(EventList,2);
     end
