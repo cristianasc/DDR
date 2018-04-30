@@ -9,7 +9,7 @@ results2 = zeros(1,N);
 lambda = [10 10 10 10 10 10 30 30 30 30 30 30];
 C =  [100 100 100 100 100 100 100 100 1000 1000 1000 1000 1000 1000 1000 1000];
 M = [4 4 4 4 10 10 10 10 4 4 4 4 10 10 10 10];
-R=50000;
+R=5000;
 P = [0.2 0.2 0.2 0.4 0.4 0.4 0.2 0.2 0.2 0.4 0.4 0.4];
 W = [0 30 60 0 30 60 0 120 180 0 120 180];
 S = [1 1 1 1 1 1 3 3 3 3 3 3];
@@ -115,11 +115,11 @@ function [bhd, b4k]= simulator2(lambda,P,S,W,MHD,M4K,R)
     %Events definition:
     %movie request
     ARRIVAL_HD= 0; 
-    ARRIVAL_4K = 1;
+    ARRIVAL_4K = 0;
     
     %termination of a movie transmission
-    DEPARTURE_4K = 2;
-    DEPARTURE_HD = 3; 
+    DEPARTURE_4K = ones(1,S);
+    DEPARTURE_HD = ones(1,S); 
     
     %State variables initialization:
     STATE = zeros(1,S); %total throughput of the movies in transmission by server i (i = 1,...,S)
@@ -131,7 +131,7 @@ function [bhd, b4k]= simulator2(lambda,P,S,W,MHD,M4K,R)
     NARRIVALS_4K = 0;
     BLOCKED_HD = 0;
     BLOCKED_4K = 0;
-    if rand() < P
+    if rand()*100 < P
         EventList= [ARRIVAL_4K exprnd(invlambda) 0];
     else
         EventList= [ARRIVAL_HD exprnd(invlambda) 0];
@@ -151,13 +151,11 @@ function [bhd, b4k]= simulator2(lambda,P,S,W,MHD,M4K,R)
             server = loadbalancer(1);
             NARRIVALS= NARRIVALS+1;
             
-            if rand() < P
-                EventList= [EventList; ARRIVAL_4K Clock+exprnd(invlambda) 0];
-            else
-                EventList= [EventList; ARRIVAL_HD Clock+exprnd(invlambda) 0];
-            end
-            
             if event == ARRIVAL_HD % verify if it's a HD ARRIVAL
+                
+                
+                
+                EventList= [EventList; ARRIVAL_HD Clock+exprnd(invlambda) 0];
                 NARRIVALS_HD = NARRIVALS_HD + 1;
             
                 if STATE(server) + MHD <= N_C && STATE_HD + MHD <= (C - W)
@@ -169,27 +167,28 @@ function [bhd, b4k]= simulator2(lambda,P,S,W,MHD,M4K,R)
                     BLOCKED_HD = BLOCKED_HD + 1;
                 end
                 
-            else
+            else if event == ARRIVAL_4K
+                EventList= [EventList; ARRIVAL_4K Clock+exprnd(invlambda_4K) 0];
                 NARRIVALS_4K = NARRIVALS_4K + 1;
-
+            
                 if STATE(server) + M4K <= N_C % servidor tem que ter pelo menos banda Mh disponivel
                     STATE(server) = STATE(server) + M4K;
                     EventList= [EventList; DEPARTURE_4K Clock+invmiu(randi(Nmovies)) server];
                 else
                     BLOCKED_4K = BLOCKED_4K + 1;
                 end
-                
+                end
             end
         else % it's a departure
             if event == DEPARTURE_HD
-                STATE(node)= STATE(node) - MHD;
+                STATE(node)= STATE(node)- MHD;
                 STATE_HD = STATE_HD - MHD;
             else 
-                STATE(node)= STATE(node) - M4K;
+                STATE(node)= STATE(node)- M4K;
             end
         end
         EventList= sortrows(EventList,2);
     end
-    bhd= 100*BLOCKED_HD/NARRIVALS_HD; % blocking probability in %   
-    b4k= 100*BLOCKED_4K/NARRIVALS_4K; % blocking probability in %
+    bhd= 100*BLOCKED_HD/NARRIVALS; % blocking probability in %   
+    b4k= 100*BLOCKED_4K/NARRIVALS; % blocking probability in %
 end
