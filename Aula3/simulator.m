@@ -6,13 +6,14 @@ N = 40; %número de simulações
 results= zeros(1,N); %vetor com os N resultados de simulação
 results2 = zeros(1,N);
 % lambda = [10 20 30 40 10 20 30 40 100 200 300 400 100 200 300 400];
-lambda = [10 10 10 10 10 10 30 30 30 30 30 30];
+%lambda = [10 10 10 10 10 10 30 30 30 30 30 30];
 C =  [100 100 100 100 100 100 100 100 1000 1000 1000 1000 1000 1000 1000 1000];
 M = [4 4 4 4 10 10 10 10 4 4 4 4 10 10 10 10];
 R=50000;
-P = [0.2 0.2 0.2 0.4 0.4 0.4 0.2 0.2 0.2 0.4 0.4 0.4];
+%P = [0.2 0.2 0.2 0.4 0.4 0.4 0.2 0.2 0.2 0.4 0.4 0.4];
+
 W = [0 30 60 0 30 60 0 120 180 0 120 180];
-S = [1 1 1 1 1 1 3 3 3 3 3 3];
+S = [10 1 1 1 1 1 3 3 3 3 3 3];
 MHD = 4;
 M4K = 10;
 
@@ -32,10 +33,28 @@ M4K = 10;
 % end
 
 
+% SIMULADOR 2A)
+% for i = 1:12
+%     for it= 1:N
+%         [results(it), results2(it)] = simulator2(lambda(i),P(i),S(i),W(i),MHD,M4K,R);
+%     end
+%     confidence_interval90(results, N, "bhd", i);
+%     confidence_interval90(results2, N, "b4k", i);
+% end
+%  
+% function [termo] = confidence_interval90(results, N, type, i)
+%     alfa= 0.1; %intervalo de confiança a 90%
+%     media = mean(results);
+%     termo = norminv(1-alfa/2)*sqrt(var(results)/N);
+%     fprintf('resultado %s%d = %.2e +- %.2e\n', type, i, vpa(media),vpa(termo))
+% end
 
+%o número de servidores (exemplo S=15) ideal tem que dar uma probabilidade menor que 0.1 
+%o numero anterior (exemplo S=14) tem que dar menor que 1%
+% SIMULADOR 2B)
 for i = 1:12
     for it= 1:N
-        [results(it), results2(it)] = simulator2(lambda(i),P(i),S(i),W(i),MHD,M4K,R);
+        [results(it), results2(it)] = simulator2((20000/(24*7)),0.3,15,0,MHD,M4K,R);
     end
     confidence_interval90(results, N, "bhd", i);
     confidence_interval90(results2, N, "b4k", i);
