@@ -62,50 +62,53 @@ G= [ 1 2
 
 %Nº Tiers
 N = 40;
+
 %OPEX cost of connecting a server farm to AS i
 c = zeros(1,N);
 for i = 6:N
-    if i <= 15 
+    if i <= 10 
         c(1,i) = 10; % Tier-2
     else 
         c(1,i) = 8; %Tier-3 
     end 
 end
 
-I = distance(G);
-file = fopen('/Users/Daniela/Desktop/UA/4ano/2semestre/ddr/practical/Aula3/lp_file.lp', 'w');                   
+I = distance(connectedAS);
+file = fopen('lp_file.lp', 'wt');                   
 fprintf(file, 'Minimize\n');                        % expression to minimize
-for i = 6:N
+for i = 1:N
     fprintf(file, ' + %d x%d', c(i), i);            % sum ci*xi
 end
 
 fprintf(file, '\nSubject To\n');
-for i = 6:N
-    for j = 6:size(I,2)
+for i = 1:N
+    for j = 1:size(I,2)
         if (I(i,j) ~= 0)                            % eliminar zeros
             fprintf(file, ' + y%d,%d', i, I(i,j));  
         end                                         
     end
-    fprintf(file, ' = %d\n', 1); 
+    fprintf(file, ' = %d\n', 0); 
 end
 
-for i = 6:N
-    for j = 6:size(I,2)
+for i = 1:N
+    for j = 1:size(I,2)
         if (I(i,j) ~= 0)                            % eliminar zeros
-            fprintf(file, ' + y%d,%d - x%d', i, I(i,j), I(i,j));                    
+            fprintf(file, ' + y%d,%d - x%d', i, ...
+                I(i,j), I(i,j));                    
             fprintf(file, ' <= %d\n', 0);           
         end                                       
     end
 end
 
 fprintf(file, 'Binary\n');
-for i = 6:N
+for i = 1:N
     fprintf(file, ' x%d', i);                       
 end
 fprintf(file, '\n');
 
-for i = 6:N
-    for j = 6:size(I,2)
+fprintf(file, 'General\n');
+for i = 1:N
+    for j = 1:size(I,2)
         if (I(i,j) ~= 0)                            % eliminar zeros
             fprintf(file, ' y%d,%d', i, I(i,j));    
         end
