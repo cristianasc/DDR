@@ -14,8 +14,9 @@ function [ val ] = distance( connectedAS )
                 end
             end
         end
-        val(k, :) = labels;
+        AS = 1:40;                                          % Number AS
+        pretended_index = (labels >= 0 & labels <= 2);      % 2 (max distance)
+        val(k, :
+        val(k, 1:size(AS(pretended_index),2)) = AS(pretended_index);
     end
-    val(val>=0) = 1;
-    val(val<0) = 0;
 end
