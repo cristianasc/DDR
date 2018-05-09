@@ -83,7 +83,7 @@ fprintf(file, '\nSubject To\n');
 for i = 6:N
     for j = 6:size(I,2)
         if (I(i,j) ~= 0)                            % eliminar zeros
-            fprintf(file, ' + y%d,%d', i, I(i,j));  
+            fprintf(file, ' + y%d,%d', i, j);  
         end                                         
     end
     fprintf(file, ' = %d\n', 1); 
@@ -92,7 +92,7 @@ end
 for i = 6:N
     for j = 6:size(I,2)
         if (I(i,j) ~= 0)                            % eliminar zeros
-            fprintf(file, ' + y%d,%d - x%d', i, I(i,j), I(i,j));                    
+            fprintf(file, ' + y%d,%d - x%d', i, j, j);                    
             fprintf(file, ' <= %d\n', 0);           
         end                                       
     end
@@ -107,7 +107,7 @@ fprintf(file, '\n');
 for i = 6:N
     for j = 6:size(I,2)
         if (I(i,j) ~= 0)                            % eliminar zeros
-            fprintf(file, ' y%d,%d', i, I(i,j));    
+            fprintf(file, ' y%d,%d', i, j);    
         end
     end
 end
