@@ -15,19 +15,18 @@ M = [4 4 4 4 10 10 10 10 4 4 4 4 10 10 10 10];
 R=50000;
 P = 0.3;
 
-W = 0;
+W = 30;
 S = 70;
 MHD = 4;
 M4K = 10;
 
 % SIMULADOR 2 - EXERCICIO 3B
- for i = 1:12
-     for it= 1:N
-         [results(it), results2(it)] = simulator2(lambda,P,S,W,MHD,M4K,R);
-     end
-     confidence_interval90(results, N, "bhd", i);
-     confidence_interval90(results2, N, "b4k", i);
+ for it= 1:N
+     [results(it), results2(it)] = simulator2(lambda,P,S,W,MHD,M4K,R);
  end
+ confidence_interval90(results, N, "bhd", 0);
+ confidence_interval90(results2, N, "b4k", 0);
+
 
 % for i = 1:16
 %     for it= 1:N
