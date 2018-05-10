@@ -15,12 +15,15 @@ M = [4 4 4 4 10 10 10 10 4 4 4 4 10 10 10 10];
 R=50000;
 P = 0.3;
 
-W = 30;
-S = 70;
+W = 4000;
+S = 73;
 MHD = 4;
 M4K = 10;
 
 % SIMULADOR 2 - EXERCICIO 3B
+% valor para S=72 , W=3900 (resultado bhd0 = 1.40e+00 +- 1.38e-01;
+% resultado b4k0 = 1.84e+00 +- 1.32e-01)
+% valor para S=73, W = 4000; resultado bhd0 = 1.30e+00 +- 1.35e-01; resultado b4k0 = 1.01e+00 +- 1.59e-01
  for it= 1:N
      [results(it), results2(it)] = simulator2(lambda,P,S,W,MHD,M4K,R);
  end
