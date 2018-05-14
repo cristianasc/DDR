@@ -25,14 +25,24 @@ for i=1:nT
 end
 Load= lambda./miu;
 Load(isnan(Load))= 0;
-MaximumLoad = max(max(Load))
-AverageLoad = sum(sum(Load))/NumberLinks
+MaximumLoad = max(max(Load)); % descomentar para ver o resultado
+AverageLoad = sum(sum(Load))/NumberLinks; % descomentar para ver o resultado
 
 % Kleinrock aproximation => network average delay
 AverageDelay = (lambda./(miu-lambda)+lambda.*d);
 AverageDelay(isnan(AverageDelay)) = 0;
 AverageDelay = sum(sum(AverageDelay))/gama;
-AverageDelay = AverageDelay*2 %ida e volta
+AverageDelay = AverageDelay*2; %ida e volta => descomentar para ver o resultado
 
-%average delay of each flow
+% o máximo delay médio de todos os fluxos
+delay_flows = zeros(nT,1);
 
+for i=1:nT
+    destination= T(i,2);
+    j= 1;
+    while r(j)~= destination
+        delay_flows(i) = delay_flows(i) + 1/(miu(r(j),r(j+1))-lambda(r(j),r(j+1))) + d(r(j),r(j+1));
+        delay_flows(i) = delay_flows(i) + 1/(miu(r(j+1),r(j))-lambda(r(j+1), r(j))) + d(r(j+1), r(j));
+        j= j+1;
+    end
+end
