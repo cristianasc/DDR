@@ -1,0 +1,30 @@
+Load Avg: ( 1.11 , 1.2 , 1.25 )
+Changed value of parameter Threads to 1
+  Prev: 0  Min: 0  Max: 1024  Default: 0
+Optimize a model with 284 rows, 284 columns and 747 nonzeros
+Variable types: 0 continuous, 284 integer (284 binary)
+Coefficient statistics:
+ Matrix range     [1e+00, 1e+00]
+ Objective range  [8e+00, 1e+01]
+ Bounds range     [1e+00, 1e+00]
+ RHS range        [1e+00, 1e+00]
+Found heuristic solution: objective 218
+Presolve time: 0.00s
+Presolved: 284 rows, 284 columns, 747 nonzeros
+Variable types: 0 continuous, 284 integer (284 binary)
+
+Root relaxation: objective 4.400000e+01, 222 iterations, 0.00 seconds
+
+   Nodes    |    Current Node    |     Objective Bounds      |     Work
+Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+*    0     0               0      44.0000000   44.00000  0.00%     -    0s
+
+Explored 0 nodes (222 simplex iterations) in 0.00 seconds
+Thread count was 1 (of 24 available processors)
+
+Solution count 2: 44 218
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 4.400000000000e+01, best bound 4.400000000000e+01, gap 0.0000%
+Optimal objective: 44.0

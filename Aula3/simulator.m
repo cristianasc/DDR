@@ -6,10 +6,10 @@ N = 40; %número de simulações
 results= zeros(1,N); %vetor com os N resultados de simulação
 results2 = zeros(1,N);
 subscribers = 3000*10 + 1500*25;
-lambda = 2 /(7*24);
-lambda = lambda * subscribers;
+%lambda = 2 /(7*24);
+%lambda = lambda * subscribers;
 %lambda = [10 20 30 40 10 20 30 40 100 200 300 400 100 200 300 400];
-%lambda = [10 10 10 10 10 10 30 30 30 30 30 30];
+lambda = [10 10 10 10 10 10 30 30 30 30 30 30];
 C =  [100 100 100 100 100 100 100 100 1000 1000 1000 1000 1000 1000 1000 1000];
 M = [4 4 4 4 10 10 10 10 4 4 4 4 10 10 10 10];
 R=50000;
@@ -24,11 +24,11 @@ M4K = 10;
 % valor para S=72 , W=3900 (resultado bhd0 = 1.40e+00 +- 1.38e-01;
 % resultado b4k0 = 1.84e+00 +- 1.32e-01)
 % valor para S=73, W = 4000; resultado bhd0 = 1.30e+00 +- 1.35e-01; resultado b4k0 = 1.01e+00 +- 1.59e-01
- for it= 1:N
-     [results(it), results2(it)] = simulator2(lambda,P,S,W,MHD,M4K,R);
- end
- confidence_interval90(results, N, "bhd", 0);
- confidence_interval90(results2, N, "b4k", 0);
+ %for it= 1:N
+ %    [results(it), results2(it)] = simulator2(lambda,P,S,W,MHD,M4K,R);
+ %end
+ %confidence_interval90(results, N, "bhd", 0);
+ %confidence_interval90(results2, N, "b4k", 0);
 
 
 % for i = 1:16
@@ -39,12 +39,12 @@ M4K = 10;
 %     confidence_interval90(results2, N, "o", i);
 % end
 % 
- function [termo] = confidence_interval90(results, N, type, i)
-     alfa= 0.1; %intervalo de confiança a 90%
-     media = mean(results);
-     termo = norminv(1-alfa/2)*sqrt(var(results)/N);
-     fprintf('resultado %s%d = %.2e +- %.2e\n', type, i, vpa(media),vpa(termo))
-end
+ %function [termo] = confidence_interval90(results, N, type, i)
+ %    alfa= 0.1; %intervalo de confiança a 90%
+ %    media = mean(results);
+ %    termo = norminv(1-alfa/2)*sqrt(var(results)/N);
+ %    fprintf('resultado %s%d = %.2e +- %.2e\n', type, i, vpa(media),vpa(termo))
+%end
 
 
 % SIMULADOR 2A)
