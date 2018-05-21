@@ -32,7 +32,7 @@ AverageLoad = sum(sum(Load))/NumberLinks; % descomentar para ver o resultado
 RTDelay = (lambda./(miu-lambda)+lambda.*d);
 RTDelay(isnan(RTDelay)) = 0;
 RTDelay = sum(sum(RTDelay))/gama;
-RTDelay = RTDelay*2; %ida e volta => descomentar para ver o resultado
+RTDelay = RTDelay*2 %ida e volta => descomentar para ver o resultado
 
 % o máximo delay médio de todos os fluxos
 delay_flows = zeros(nT,1);
