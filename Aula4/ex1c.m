@@ -46,6 +46,14 @@ end
 
 delay_flows = sortrows(delay_flows, -1); %ordenar de forma decrescente
 
+subplot(1,2,1)
 plot(delay_flows)
 grid on
 title('Average packet round-trip delay of each flow') 
+
+subplot(1,2,2)
+graph_load = sortrows(Load(:), -1);  %ordenar de forma decrescente
+graph_load = graph_load(1:NumberLinks);
+plot(graph_load)
+grid on
+title('Load of each link') 

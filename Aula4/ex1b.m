@@ -50,5 +50,5 @@ for i=1:nT
     end
 end
 
-delay_flows = sortrows(delay_flows, -1) %ordenar de forma decrescente
+delay_flows = sortrows(delay_flows, -1); %ordenar de forma decrescente
 max_delay = delay_flows(1) %ir buscar o pior valor
