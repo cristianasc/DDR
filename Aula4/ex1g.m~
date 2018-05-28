@@ -11,18 +11,15 @@ while Counter < 20
          for i=1:size(CurrentSolution,1)
              NeighbourSolution= BuildNeighbour(CurrentSolution,lambda, i); 
              [AverageDelayNeighbor, max_delayNeighbor] = Evaluate(NeighbourSolution, lambda);
-             if AverageDelayNeighbor <= NeighbourBest
-                 if AverageDelayNeighbor == NeighbourBest
+             if AverageDelayNeighbor <= AverageDelay
+                 if AverageDelay == AverageDelayNeighbor
                      if max_delayNeighbor < max_delay
-                        max_delay = max_delayNeighbor;
-                        AverageDelay = AverageDelayNeighbor;
+                         max_delay
                         %NeighbourBest= NeighbourObjective;
                         NeighbourBestSolution= NeighbourSolution;
                      end
                  else
-                     max_delay = max_delayNeighbor;
-                     AverageDelay = AverageDelayNeighbor;
-                     %NeighbourBest= NeighbourObjective;
+                     NeighbourBest= NeighbourObjective;
                      NeighbourBestSolution= NeighbourSolution;
                  end
              end
@@ -42,3 +39,4 @@ while Counter < 20
          Counter = Counter + 1;
      end
 end
+CurrentObjective
