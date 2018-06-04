@@ -1,8 +1,7 @@
-%calcular o delay de ida e volta => soma dos dois atrasos médios
 Matrizes;
 miu= R*1e9/(8*1000);
 NumberLinks= sum(sum(R>0));
-T(:,3:4)= T(:,3:4)*1e6/(8*1000); % transforma em pacotes por segundo
+T(:,3:4)= T(:,3:4)*1e6/(8*1000); 
 gama= sum(sum(T(:,3:4)));
 d= L*1e3/2e8;
 nT= size(T,1);
@@ -25,11 +24,10 @@ for i=1:nT
 end
 Load= lambda./miu;
 Load(isnan(Load))= 0;
-MaximumLoad = max(max(Load)); % descomentar para ver o resultado
-AverageLoad = sum(sum(Load))/NumberLinks; % descomentar para ver o resultado
+MaximumLoad = max(max(Load)); 
+AverageLoad = sum(sum(Load))/NumberLinks; 
 
-% o máximo delay médio de todos os fluxos
-delay_flows = zeros(nT,1);
+delayFlows = zeros(nT,1);
 
 for i=1:nT
     origin= T(i,1);
@@ -38,22 +36,24 @@ for i=1:nT
     routes(i,:)= r;
     j=1;
     while r(j)~= destination
-        delay_flows(i) = delay_flows(i) + (1/(miu(r(j),r(j+1))-lambda(r(j),r(j+1))) + d(r(j),r(j+1)));
-        delay_flows(i) = delay_flows(i) + (1/(miu(r(j+1),r(j))-lambda(r(j+1), r(j))) + d(r(j+1), r(j)));
+        delayFlows(i) = delayFlows(i) + (1/(miu(r(j),r(j+1))-lambda(r(j),r(j+1))) + d(r(j),r(j+1)));
+        delayFlows(i) = delayFlows(i) + (1/(miu(r(j+1),r(j))-lambda(r(j+1), r(j))) + d(r(j+1), r(j)));
         j= j+1;
     end
 end
 
-delay_flows = sortrows(delay_flows, -1); %ordenar de forma decrescente
+delayFlows = sortrows(delayFlows, -1);
 
 subplot(1,2,1)
-plot(delay_flows)
+plot(delayFlows)
+xlim([0 110])
 grid on
 title('Average packet round-trip delay of each flow') 
 
 subplot(1,2,2)
-graph_load = sortrows(Load(:), -1);  %ordenar de forma decrescente
+graph_load = sortrows(Load(:), -1);
 graph_load = graph_load(1:NumberLinks);
 plot(graph_load)
+xlim([0 65])
 grid on
 title('Load of each link') 
