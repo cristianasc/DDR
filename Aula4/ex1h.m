@@ -3,16 +3,16 @@
 Counter = 0;
 GlobalBest1 = Inf;
 GlobalBest2 = Inf;
-while Counter < 20
-    [CurrentSolution, lambda] = GreedyRandomized(); 
-    [CurrentObjective1, CurrentObjective2] = Evaluate(CurrentSolution, lambda);  %AverageDelay
+while Counter < 500
+    [CurrentSolution, lambda] = GreedyRandomizedLoad(); 
+    [CurrentObjective1, CurrentObjective2] = Evaluate(CurrentSolution, lambda);
     repeat= true;
     while repeat
          NeighbourBest1 = Inf;
          NeighbourBest2 = Inf;
          for i=1:size(CurrentSolution,1)
-             NeighbourSolution= BuildNeighbour(CurrentSolution,lambda, i); 
-             [NeighbourObjective1, NeighbourObjective2] = Evaluate(NeighbourSolution, lambda);
+             NeighbourSolution= BuildNeighbourLoad(CurrentSolution,lambda, i); 
+             [NeighbourObjective1, NeighbourObjective2] = EvaluateLoad(NeighbourSolution, lambda);
              if NeighbourObjective1 < NeighbourBest1
                  NeighbourBest1 = NeighbourObjective1;
                  NeighbourBest2 = NeighbourObjective2;
@@ -66,7 +66,6 @@ RTDelay = RTDelay*2 %ida e volta => descomentar para ver o resultado
 delay_flows = zeros(nT,1);
 
 for i=1:nT
-    origin= T(i,1);
     destination= T(i,2);
     r = CurrentSolution(i,:);
     j=1;
