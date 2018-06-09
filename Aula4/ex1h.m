@@ -3,25 +3,28 @@
 Counter = 0;
 GlobalBest1 = Inf;
 GlobalBest2 = Inf;
-while Counter < 500
-    [CurrentSolution, lambda] = GreedyRandomizedLoad(); 
-    [CurrentObjective1, CurrentObjective2] = Evaluate(CurrentSolution, lambda);
+lambda = 0;
+while Counter < 20
+    [CurrentSolution, CurrentSolutionlambda] = GreedyRandomizedLoad(); 
+    [CurrentObjective1, CurrentObjective2] = EvaluateLoad(CurrentSolutionlambda);  %AverageDelay
     repeat= true;
     while repeat
          NeighbourBest1 = Inf;
          NeighbourBest2 = Inf;
          for i=1:size(CurrentSolution,1)
-             NeighbourSolution= BuildNeighbourLoad(CurrentSolution,lambda, i); 
-             [NeighbourObjective1, NeighbourObjective2] = EvaluateLoad(NeighbourSolution, lambda);
+             [NeighbourSolution, NeighbourSolutionLambda] = BuildNeighbourLoad(CurrentSolution,CurrentSolutionlambda, i); 
+             [NeighbourObjective1, NeighbourObjective2] = EvaluateLoad(NeighbourSolutionLambda);
              if NeighbourObjective1 < NeighbourBest1
                  NeighbourBest1 = NeighbourObjective1;
                  NeighbourBest2 = NeighbourObjective2;
-                 NeighbourBestSolution = NeighbourSolution;  
+                 NeighbourBestSolution = NeighbourSolution;
+                 lambda = NeighbourSolutionLambda;
              elseif NeighbourObjective1 == NeighbourBest1
                  if NeighbourObjective2 < NeighbourBest2
                     NeighbourBest1 = NeighbourObjective1;
                     NeighbourBest2 = NeighbourObjective2;
                     NeighbourBestSolution= NeighbourSolution;
+                    lambda = NeighbourSolutionLambda;
                  end
              end
          end
@@ -29,12 +32,15 @@ while Counter < 500
              CurrentObjective1 = NeighbourBest1;
              CurrentObjective2 = NeighbourBest2;
              CurrentSolution = NeighbourBestSolution;
+             lambda = NeighbourSolutionLambda;
+             
          else
              repeat= false;
          end
      end
      if CurrentObjective1 < GlobalBest1 || (CurrentObjective1 == GlobalBest1 &&   CurrentObjective2 < GlobalBest2) 
          GlobalBestSolution = CurrentSolution;
+         GlobalBestSolution_lambda= lambda;
          GlobalBest1 = CurrentObjective1;
          GlobalBest2 = CurrentObjective2;
          Counter = 0;
@@ -42,6 +48,8 @@ while Counter < 500
          Counter = Counter + 1;
      end
 end
+
+lambda = GlobalBestSolution_lambda;
 
 Matrizes;
 miu= R*1e9/(8*1000);
@@ -60,14 +68,16 @@ AverageLoad = sum(sum(Load))/NumberLinks % descomentar para ver o resultado
 RTDelay = (lambda./(miu-lambda)+lambda.*d);
 RTDelay(isnan(RTDelay)) = 0;
 RTDelay = sum(sum(RTDelay))/gama;
+format long
 RTDelay = RTDelay*2 %ida e volta => descomentar para ver o resultado
 
 % o máximo delay médio de todos os fluxos
 delay_flows = zeros(nT,1);
 
 for i=1:nT
+    origin= T(i,1);
     destination= T(i,2);
-    r = CurrentSolution(i,:);
+    r = GlobalBestSolution(i,:);
     j=1;
     while r(j)~= destination
         delay_flows(i) = delay_flows(i) + (1/(miu(r(j),r(j+1))-lambda(r(j),r(j+1))) + d(r(j),r(j+1)));
