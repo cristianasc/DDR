@@ -15,14 +15,12 @@ function [AverageDelay,max_delay]  = Evaluate(CurrentSolution, lambda)
     delay_flows = zeros(nT,1);
 
     for i=1:nT
-        origin= T(i,1);
         destination= T(i,2);
-        r= ShortestPathSym(d,origin,destination); 
-        CurrentSolution(i,:)= r;
+        r = CurrentSolution(i,:); 
         j=1;
         while CurrentSolution(i, j)~= destination
-            delay_flows(i) = delay_flows(i) + (1/(miu(CurrentSolution(i, j),CurrentSolution(i, j+1))-lambda(CurrentSolution(i, j),CurrentSolution(i, j+1))) + d(CurrentSolution(i, j),CurrentSolution(i, j+1)));
-            delay_flows(i) = delay_flows(i) + (1/(miu(CurrentSolution(i, j+1),CurrentSolution(i, j))-lambda(CurrentSolution(i, j+1),CurrentSolution(i, j))) + d(CurrentSolution(i, j+1), CurrentSolution(i, j)));
+            delay_flows(i)= delay_flows(i)+1/(miu(r(j),r(j+1))-lambda(r(j),r(j+1))) + d(r(j),r(j+1));
+            delay_flows(i)= delay_flows(i)+1/(miu(r(j+1),r(j))-lambda(r(j+1),r(j))) + d(r(j+1),r(j));
             j= j+1;
         end
     end
