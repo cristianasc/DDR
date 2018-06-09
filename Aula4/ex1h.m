@@ -14,12 +14,12 @@ while Counter < 20
          for i=1:size(CurrentSolution,1)
              [NeighbourSolution, NeighbourSolutionLambda] = BuildNeighbourLoad(CurrentSolution,CurrentSolutionlambda, i); 
              [NeighbourObjective1, NeighbourObjective2] = EvaluateLoad(NeighbourSolutionLambda);
-             if NeighbourObjective1 < NeighbourBest1
+             if NeighbourObjective1 < CurrentObjective1
                  NeighbourBest1 = NeighbourObjective1;
                  NeighbourBest2 = NeighbourObjective2;
                  NeighbourBestSolution = NeighbourSolution;
                  lambda = NeighbourSolutionLambda;
-             elseif NeighbourObjective1 == NeighbourBest1
+             elseif NeighbourObjective1 == CurrentObjective1
                  if NeighbourObjective2 < NeighbourBest2
                     NeighbourBest1 = NeighbourObjective1;
                     NeighbourBest2 = NeighbourObjective2;
