@@ -29,13 +29,11 @@ Load(isnan(Load))= 0;
 MaximumLoad = max(max(Load))
 AverageLoad = sum(sum(Load))/NumberLinks
 
-% Kleinrock aproximation => network average delay
 AverageDelay = (lambda./(miu-lambda)+lambda.*d);
 AverageDelay(isnan(AverageDelay)) = 0;
 AverageDelay = sum(sum(AverageDelay))/gama;
-AverageDelay = AverageDelay*2 %ida e volta => descomentar para ver o resultado
+AverageDelay = AverageDelay*2 
 
-% o máximo delay médio de todos os fluxos
 delay_flows = zeros(nT,1);
 
 for i=1:nT
@@ -51,17 +49,19 @@ for i=1:nT
     end
 end
 
-delay_flows = sortrows(delay_flows, -1); %ordenar de forma decrescente
-max_delay = delay_flows(1) %ir buscar o pior valor
+delay_flows = sortrows(delay_flows, -1); 
+max_delay = delay_flows(1) 
 
 subplot(1,2,1)
 plot(delay_flows)
+xlim([0 110])
 grid on
 title('Average packet round-trip delay of each flow') 
 
 subplot(1,2,2)
-graph_load = sortrows(Load(:), -1);  %ordenar de forma decrescente
+graph_load = sortrows(Load(:), -1); 
 graph_load = graph_load(1:NumberLinks);
 plot(graph_load)
+xlim([0 65])
 grid on
 title('Load of each link') 
