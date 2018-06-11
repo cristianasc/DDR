@@ -1,12 +1,10 @@
-% average delay for menor ou igual, e neste caso se for igual entao o max
-% delay tem de ser também menor
 Counter = 0;
 GlobalBest1 = Inf;
 GlobalBest2 = Inf;
 lambda = 0;
-while Counter < 20
+while Counter < 1000
     [CurrentSolution, CurrentSolutionlambda] = GreedyRandomized(); 
-    [CurrentObjective1, CurrentObjective2] = Evaluate(CurrentSolution, CurrentSolutionlambda);  %AverageDelay
+    [CurrentObjective1, CurrentObjective2] = Evaluate(CurrentSolution, CurrentSolutionlambda);
     repeat= true;
     while repeat
          NeighbourBest1 = Inf;
@@ -54,24 +52,22 @@ lambda = GlobalBestSolution_lambda;
 Matrizes;
 miu= R*1e9/(8*1000);
 NumberLinks= sum(sum(R>0));
-T(:,3:4)= T(:,3:4)*1e6/(8*1000); % transforma em pacotes por segundo
+T(:,3:4)= T(:,3:4)*1e6/(8*1000); 
 gama= sum(sum(T(:,3:4)));
 d= L*1e3/2e8;
 nT= size(T,1);
 
 Load= lambda./miu;
 Load(isnan(Load))= 0;
-MaximumLoad = max(max(Load)) % descomentar para ver o resultado
-AverageLoad = sum(sum(Load))/NumberLinks % descomentar para ver o resultado
+MaximumLoad = max(max(Load)) 
+AverageLoad = sum(sum(Load))/NumberLinks 
 
-% Kleinrock aproximation => network average delay
 RTDelay = (lambda./(miu-lambda)+lambda.*d);
 RTDelay(isnan(RTDelay)) = 0;
 RTDelay = sum(sum(RTDelay))/gama;
 format long
-RTDelay = RTDelay*2 %ida e volta => descomentar para ver o resultado
+RTDelay = RTDelay*2 
 
-% o máximo delay médio de todos os fluxos
 delay_flows = zeros(nT,1);
 
 for i=1:nT
@@ -86,17 +82,19 @@ for i=1:nT
     end
 end
 
-delay_flows = sortrows(delay_flows, -1); %ordenar de forma decrescente
-max_delay = delay_flows(1) %ir buscar o pior valor
+delay_flows = sortrows(delay_flows, -1); 
+max_delay = delay_flows(1) 
 
 subplot(1,2,1)
 plot(delay_flows)
+xlim([0 110])
 grid on
 title('Average packet round-trip delay of each flow') 
 
 subplot(1,2,2)
-graph_load = sortrows(Load(:), -1);  %ordenar de forma decrescente
+graph_load = sortrows(Load(:), -1);  
 graph_load = graph_load(1:NumberLinks);
 plot(graph_load)
+xlim([0 65])
 grid on
 title('Load of each link') 
